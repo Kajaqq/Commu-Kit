@@ -1,10 +1,11 @@
-﻿using CsvHelper;
+﻿using System.ComponentModel;
+using System.Globalization;
+using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using CsvHelper.TypeConversion;
 using Newtonsoft.Json;
-using System.ComponentModel;
-using UAssetAPI.StructTypes;
+using UAssetAPI.PropertyTypes.Structs;
 
 namespace Commu_Kit
 {
@@ -22,17 +23,13 @@ namespace Commu_Kit
             Target = "";
         }
 
-        [Name("id")]
-        public string Identifier { get; set; }
+        [Name("id")] public string Identifier { get; set; }
 
-        [Name("character")]
-        public string CharacterName { get; set; }
+        [Name("character")] public string CharacterName { get; set; }
 
-        [Name("source")]
-        public string Source { get; set; }
+        [Name("source")] public string Source { get; set; }
 
-        [Name("translatedstr")]
-        public string Target { get; set; }
+        [Name("translatedstr")] public string Target { get; set; }
 
         [Name("translatornotes")]
         [Optional]
@@ -40,6 +37,7 @@ namespace Commu_Kit
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string Notes { get; set; } = "";
     }
+
     public class LineBreakConverter : DefaultTypeConverter
     {
         public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
@@ -52,7 +50,7 @@ namespace Commu_Kit
     {
         public CsvClassMap(bool useNotes)
         {
-            AutoMap(System.Globalization.CultureInfo.InvariantCulture);
+            AutoMap(CultureInfo.InvariantCulture);
             Map(m => m.Source).TypeConverter<LineBreakConverter>();
             Map(m => m.Target).TypeConverter<LineBreakConverter>();
             Map(m => m.Notes).TypeConverter<LineBreakConverter>();

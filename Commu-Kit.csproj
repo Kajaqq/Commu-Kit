@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>Commu_Kit</RootNamespace>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="UAssetAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="UAssetAPI, Version=1.0.2.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>\lib\UAssetAPI.dll</HintPath>
     </Reference>
   </ItemGroup>

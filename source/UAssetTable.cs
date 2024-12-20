@@ -2,23 +2,45 @@
 using System.IO;
 using System.Linq;
 using UAssetAPI;
-using UAssetAPI.PropertyTypes;
-using UAssetAPI.StructTypes;
+using UAssetAPI.ExportTypes;
+using UAssetAPI.PropertyTypes.Objects;
+using UAssetAPI.PropertyTypes.Structs;
+using UAssetAPI.UnrealTypes;
 
 namespace Commu_Kit
 {
     internal class UAssetTable
     {
-        public List<StructPropertyData> Data => table.Data;
+        private const EngineVersion UNREAL_VERSION = EngineVersion.VER_UE4_24;
+        private readonly UAsset openFile;
+        private readonly UDataTable table;
+
+        private MessageList messages = null;
 
         public UAssetTable(string uAssetPath)
         {
             openFile = new UAsset(uAssetPath, UNREAL_VERSION);
-            table = (openFile.Exports[0] as DataTableExport)?.Table;
+            DataTableExport myExport = (DataTableExport)openFile.Exports[0];
+            table = myExport?.Table;
             if (table is null)
             {
                 throw new InvalidDataException("Could not access data table. Please check you also have the corresponding .uexp file.");
             }
+        }
+
+        public List<StructPropertyData> Data => table.Data;
+
+        private MessageList Messages
+        {
+            get
+            {
+                if (messages is null)
+                {
+                    messages = GetTrimmedData();
+                }
+                return messages;
+            }
+            set => messages = value;
         }
 
         public void ReadCsv(string inFilename) => Messages = MessageList.ReadCsv(inFilename);
@@ -50,28 +72,9 @@ namespace Commu_Kit
 
         public void WriteJson(string outFilename) => Messages.WriteJson(outFilename);
 
-        private MessageList Messages
-        {
-            get
-            {
-                if (messages is null)
-                {
-                    messages = GetTrimmedData();
-                }
-                return messages;
-            }
-            set => messages = value;
-        }
-
         private MessageList GetTrimmedData()
         {
             return new MessageList(Data.Select((entry) => new CSVClass(entry)));
         }
-
-        private MessageList messages = null;
-
-        private const UE4Version UNREAL_VERSION = UE4Version.VER_UE4_24;
-        private readonly UAsset openFile;
-        private readonly DataTable table;
     }
 }
